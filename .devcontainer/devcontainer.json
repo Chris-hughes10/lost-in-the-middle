@@ -1,0 +1,37 @@
+// File only needed for VSCode users to have proper Docker based interpreters
+{
+    "name": "llm",
+    "build": {
+         "dockerfile": "Dockerfile"
+    },
+    "runArgs": [
+        // ACTION NEEDED: uncomment the next line if your local machine has GPUs available
+        // "--gpus", "all",
+        // Enable the docker container to access system resources
+        "--ipc", "host"
+    ],
+    "remoteEnv": {
+        "PYTHONPATH": "${containerEnv:PATH}:${containerWorkspaceFolder}/src/llm${containerWorkspaceFolder}/src"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "EditorConfig.EditorConfig",
+                "ms-python.python",
+                "GitHub.copilot",
+                "blackCodeFormatter.black",
+                "ms-toolsai.jupyter",
+                "redhat.vscode-yaml",
+                "charliermarsh.ruff"
+             ]
+        }
+    },
+    "workspaceFolder": "/workspaces/embedding-efficacy-experimentation",
+    // Need git for VSCode to color code modifications. Only runs when building environment.
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {"version": "latest"}
+    },
+    // Prevent dubious git repository ownership errors
+    "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+    "onCreateCommand": "pip install ipykernel && sh data/helpers/install-git-lfs.sh"
+}
